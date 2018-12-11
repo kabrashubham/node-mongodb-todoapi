@@ -5,8 +5,20 @@ const expect = require('expect');
 const {app} = require('./../server');
 const {Todo} = require('./../models/todo');
 
+const todos = [
+    {
+        text:'First'
+    },
+    {
+        text:'Second'
+    }
+]
+
+
 beforeEach((done)=>{
-    Todo.remove({}).then(()=>done())
+    Todo.remove({}).then(()=>{
+       return Todo.insertMany(todos);
+    }).then(()=>done());
 })
 
 describe('POST /todos',()=>{
@@ -47,4 +59,13 @@ describe('POST /todos',()=>{
     //              }).catch((e)=> done(e));   
     //     })
     // })
+})
+
+describe('GET /todos',()=>{
+    it('should get all todos',(done)=>{
+request(app)
+.get('/todos')
+.expect(200)
+.end(done)
+    })
 })
